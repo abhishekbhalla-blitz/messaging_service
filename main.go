@@ -52,7 +52,11 @@ func init() {
 }
 
 func main() {
-	port := os.Getenv("PORT")
+	port, portSet := os.LookupEnv("PORT")
+	if !portSet {
+		port = "8080"
+		os.Setenv("PORT", port)
+	}
 
 	init := config.Init()
 	app := router.Init(init)

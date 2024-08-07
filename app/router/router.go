@@ -17,5 +17,12 @@ func Init(init *config.Initialization) *gin.Engine {
 		message.GET("/start", init.MessageController.StartTest)
 	}
 
+	// health
+	router.GET("/message-service/health", init.HealthController.PingPong)
+
 	return router
+}
+
+func Pong() {
+
 }

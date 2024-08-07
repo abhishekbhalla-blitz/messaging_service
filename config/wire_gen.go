@@ -18,7 +18,8 @@ func Init() *Initialization {
 	kafkaMessageService := service.KafkaMessageServiceInit()
 	defaultMessageServiceImpl := service.DefaultMessageServiceInit(kafkaMessageService)
 	messageControllerImpl := controller.MessageControllerInit(defaultMessageServiceImpl)
-	initialization := NewInitialization(defaultMessageServiceImpl, messageControllerImpl)
+	healthControllerImpl := controller.HealthControllerInit()
+	initialization := NewInitialization(defaultMessageServiceImpl, messageControllerImpl, healthControllerImpl)
 	return initialization
 }
 
@@ -29,5 +30,7 @@ var kafkaMessageServiceSet = wire.NewSet(service.KafkaMessageServiceInit)
 
 var defaultMessageServiceSet = wire.NewSet(service.DefaultMessageServiceInit, wire.Bind(new(service.MessageService), new(*service.DefaultMessageServiceImpl)))
 
-// Message Controller
+// Controller
 var messageControllerSet = wire.NewSet(controller.MessageControllerInit, wire.Bind(new(controller.MessageController), new(*controller.MessageControllerImpl)))
+
+var healthControllerSet = wire.NewSet(controller.HealthControllerInit, wire.Bind(new(controller.HealthController), new(*controller.HealthControllerImpl)))
