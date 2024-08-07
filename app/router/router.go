@@ -22,7 +22,3 @@ func Init(init *config.Initialization) *gin.Engine {
 
 	return router
 }
-
-func Pong() {
-
-}
