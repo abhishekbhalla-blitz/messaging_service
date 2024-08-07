@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -35,7 +34,7 @@ func (messageControllerImpl MessageControllerImpl) StartTest(context *gin.Contex
 	numRequests, _ := strconv.Atoi(context.Query("count"))
 
 	// URL to make the POST request to
-	url := "http://127.0.0.1:8081/api/message"
+	url := "http://stage-messaging.sdloki.in/api/message/"
 
 	// Variables to store the times
 	var totalDuration time.Duration
@@ -61,7 +60,7 @@ func (messageControllerImpl MessageControllerImpl) StartTest(context *gin.Contex
 		duration := time.Since(startTime)
 
 		if err != nil {
-			log.Error("Error making request: %v\n", err)
+			fmt.Printf("Error making request: %v\n", err)
 			return
 		}
 		defer resp.Body.Close()
@@ -69,7 +68,7 @@ func (messageControllerImpl MessageControllerImpl) StartTest(context *gin.Contex
 		// Read and discard the response body
 		_, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Error("Error reading response body: %v\n", err)
+			fmt.Printf("Error reading response body: %v\n", err)
 			return
 		}
 
@@ -87,8 +86,8 @@ func (messageControllerImpl MessageControllerImpl) StartTest(context *gin.Contex
 	avgDuration := totalDuration / time.Duration(numRequests)
 
 	// Print the results
-	log.Info("Total time: %v\n", totalDuration)
-	log.Info("Average time: %v\n", avgDuration)
-	log.Info("Max time: %v\n", maxDuration)
-	log.Info("Min time: %v\n\n\n", minDuration)
+	fmt.Printf("Total time: %v\n", totalDuration)
+	fmt.Printf("Average time: %v\n", avgDuration)
+	fmt.Printf("Max time: %v\n", maxDuration)
+	fmt.Printf("Min time: %v\n\n\n", minDuration)
 }
