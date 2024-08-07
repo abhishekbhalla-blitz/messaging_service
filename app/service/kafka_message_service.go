@@ -13,7 +13,7 @@ type KafkaMessageService struct {
 func KafkaMessageServiceInit() *KafkaMessageService {
 	var p, _ = kafka.NewProducer(
 		&kafka.ConfigMap{
-			"bootstrap.servers":  "my-cluster-kafka-bootstrap:9092",
+			"bootstrap.servers":  "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092",
 			"linger.ms":          100,
 			"batch.num.messages": 50,
 			//"enable.idempotence": true,
