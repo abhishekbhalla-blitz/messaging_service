@@ -4,6 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 	"os"
+	"strings"
 )
 
 // Configuration is default + overrides from `config.yml`
@@ -30,18 +31,21 @@ func InitConfig() {
 }
 
 func getEnvironment() Environment {
-	var environment Environment = DEFAULT
+	var environment = DEFAULT
 	environmentVal, isEnvironmentSet := os.LookupEnv("env")
 
 	if !isEnvironmentSet {
 		log.Infof("Environment not set. Using default configuration.")
+		os.Setenv("env", string(DEFAULT))
 	} else {
+		os.Setenv("env", strings.ToLower(environmentVal))
 		environment, err := ParseEnvironment(environmentVal)
 		if err != nil {
-			log.Fatalf("Invalid environment: %s", environmentVal)
+			log.Fatalf("Invalid environment: %s", environment)
 		}
-		log.Infof("Using environment: %s", environment)
 	}
+
+	log.Infof("Using environment: %s", environment)
 	return environment
 }
 

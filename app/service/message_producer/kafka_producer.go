@@ -1,10 +1,12 @@
 package message_producer
 
 import (
+	"errors"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	log "github.com/sirupsen/logrus"
 	"shopdeck.com/messaging_service/app/domain/dto/httprequest"
 	"shopdeck.com/messaging_service/config"
+	"time"
 )
 
 type KafkaMessageProducer struct {
@@ -43,15 +45,39 @@ func getKafkaConfigMap(servers string) kafka.ConfigMap {
 }
 
 func (kmp *KafkaMessageProducer) SendMessage(request httprequest.PublishMessageRequest) error {
-	message := kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &request.Target, Partition: kafka.PartitionAny},
-		Value:          []byte(request.Message),
-		TimestampType:  kafka.TimestampLogAppendTime,
-	}
+	message := extractMessage(request)
+	deliveryChan := make(chan kafka.Event, 1)
+	return kmp.sendMessage(message, deliveryChan)
+}
 
-	err := kmp.producer.Produce(&message, nil)
+func extractMessage(request httprequest.PublishMessageRequest) kafka.Message {
+	return kafka.Message{
+		TopicPartition: kafka.TopicPartition{
+			Topic:     &request.Target,
+			Partition: kafka.PartitionAny,
+		},
+		Key:           []byte(""),
+		Value:         []byte(request.Message),
+		TimestampType: kafka.TimestampLogAppendTime,
+	}
+}
+
+func (kmp *KafkaMessageProducer) sendMessage(message kafka.Message, deliveryChan chan kafka.Event) error {
+	err := kmp.producer.Produce(&message, deliveryChan)
 	if err != nil {
 		return err
+	}
+
+	select {
+	case e := <-deliveryChan:
+		m := e.(*kafka.Message)
+		if m.TopicPartition.Error != nil {
+			log.Printf("Delivery failed: %v", m.TopicPartition.Error)
+			return m.TopicPartition.Error
+		}
+	case <-time.After(3000*time.Millisecond + 100*time.Millisecond):
+		log.Println("Timed out waiting for delivery report")
+		return errors.New("timed out waiting for delivery report")
 	}
 
 	return nil

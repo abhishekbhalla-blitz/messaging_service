@@ -15,7 +15,7 @@ func PrimaryMessageProducerProviderInit(configuration config.Config) PrimaryMess
 	healthy := producer.HealthCheck()
 	if !healthy {
 		log.Error("Primary producer unhealthy")
-		if configuration.Producer.Fallback.FastFail {
+		if configuration.Producer.Primary.FastFail {
 			log.Fatal("Fast fail enabled for primary producer. Quitting.")
 		}
 	}

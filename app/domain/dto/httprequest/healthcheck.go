@@ -24,8 +24,8 @@ type FallbackHealthStatus struct {
 }
 
 type CircuitBreakerHealthStatus struct {
-	Enabled bool            `json:"enabled"`
-	State   gobreaker.State `json:"state"`
+	Enabled bool   `json:"enabled"`
+	State   string `json:"state"`
 }
 
 // HealthCheckResponseBuilder
@@ -59,7 +59,7 @@ func (healthCheckResponseBuilder *HealthCheckResponseBuilder) SetFallbackHealthS
 
 func (healthCheckResponseBuilder *HealthCheckResponseBuilder) SetCircuitBreakerState(circuitBreakerState gobreaker.State) *HealthCheckResponseBuilder {
 	healthCheckResponseBuilder.circuitBreakerState.Enabled = true
-	healthCheckResponseBuilder.circuitBreakerState.State = circuitBreakerState
+	healthCheckResponseBuilder.circuitBreakerState.State = circuitBreakerState.String()
 	return healthCheckResponseBuilder
 }
 

@@ -15,8 +15,9 @@ const (
 	PRODUCTION Environment = "prod"
 )
 
-func ParseEnvironment(lvl string) (Environment, error) {
-	switch strings.ToUpper(lvl) {
+func ParseEnvironment(envVal string) (Environment, error) {
+	envValLower := strings.ToLower(envVal)
+	switch envValLower {
 	case string(DEFAULT):
 		return DEFAULT, nil
 	case string(LOCAL):
@@ -28,6 +29,6 @@ func ParseEnvironment(lvl string) (Environment, error) {
 	case string(PRODUCTION):
 		return PRODUCTION, nil
 	default:
-		return "", fmt.Errorf("invalid environment: %s", lvl)
+		return "", fmt.Errorf("invalid environment: %s", envValLower)
 	}
 }

@@ -13,9 +13,9 @@ producer:
     producerConfig:
       type: "kafka"
       kafkaConfig:
+        healthCheckTopic: "health"
         brokers:
           - "localhost:9094"
-        healthCheckTopic: "health"
   fallback:
     name: "KafkaStage"
     enabled: true
@@ -23,6 +23,6 @@ producer:
     producerConfig:
       type: "kafka"
       kafkaConfig:
-        brokers:
-          - "my-cluster-broker-0.my-cluster-kafka-brokers.kafka.svc:9092"
         healthCheckTopic: "health"
+        brokers:
+          - "my-cluster-broker-0.my-cluster-kafka-brokers.kafka.svc:9094"
