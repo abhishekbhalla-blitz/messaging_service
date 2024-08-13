@@ -1,14 +1,17 @@
 package service
 
 import (
-	httprequest "shopdeck.com/messaging_service/app/domain/dto"
+	"github.com/sony/gobreaker"
+	"shopdeck.com/messaging_service/app/domain/dto/httprequest"
 )
 
 type MessageService interface {
-	PublishMessage(request httprequest.PublishMessageRequest) error
-	PublishMessageAsync(request httprequest.PublishMessageRequest) error
-}
+	IsCircuitBreakerEnabled() bool
+	GetCircuitBreakerState() gobreaker.State
 
-func MessageServiceInit(messageService DefaultMessageServiceImpl) *DefaultMessageServiceImpl {
-	return &messageService
+	GetPrimaryProducerHealth() bool
+	GetFallbackProducerHealth() bool
+
+	SendMessage(request httprequest.PublishMessageRequest) error
+	SendMessageAsync(request httprequest.PublishMessageRequest)
 }

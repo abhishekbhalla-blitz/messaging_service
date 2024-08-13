@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"shopdeck.com/messaging_service/app/constant/response_status"
-	httprequest "shopdeck.com/messaging_service/app/domain/dto/request"
+	"shopdeck.com/messaging_service/app/domain/dto/httprequest"
 )
 
 func Null() interface{} {

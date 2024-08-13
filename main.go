@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	"os"
-
 	"shopdeck.com/messaging_service/app/router"
 	"shopdeck.com/messaging_service/config"
+	"shopdeck.com/messaging_service/initialize"
+	"strconv"
 )
 
 //func produceConfluentKafkaGo(numMessages int, topic *string, value []byte) {
@@ -47,19 +46,13 @@ import (
 //}
 
 func init() {
-	godotenv.Load()
-	config.InitLog()
+	config.InitConfig()
+	initialize.InitLog()
 }
 
 func main() {
-	port, portSet := os.LookupEnv("PORT")
-	if !portSet {
-		port = "8080"
-		os.Setenv("PORT", port)
-	}
-
-	init := config.Init()
+	configuration := config.GetConfiguration()
+	init := initialize.Init()
 	app := router.Init(init)
-
-	app.Run(":" + port)
+	app.Run(":" + strconv.Itoa(configuration.Server.Port))
 }

@@ -1,0 +1,28 @@
+server:
+  port: 8081
+  contextPath: "/messaging-service"
+
+log:
+  level: "debug"
+
+producer:
+  primary:
+    name: "KafkaLocal"
+    enabled: true
+    fastFail: true
+    producerConfig:
+      type: "kafka"
+      kafkaConfig:
+        brokers:
+          - "localhost:9094"
+        healthCheckTopic: "health"
+  fallback:
+    name: "KafkaStage"
+    enabled: true
+    fastFail: true
+    producerConfig:
+      type: "kafka"
+      kafkaConfig:
+        brokers:
+          - "my-cluster-broker-0.my-cluster-kafka-brokers.kafka.svc:9092"
+        healthCheckTopic: "health"

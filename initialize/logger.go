@@ -1,14 +1,14 @@
-package config
+package initialize
 
 import (
-	"os"
+	"shopdeck.com/messaging_service/config"
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
 	log "github.com/sirupsen/logrus"
 )
 
 func InitLog() {
-	log.SetLevel(getLoggerLevel(os.Getenv("LOG_LEVEL")))
+	log.SetLevel(getLoggerLevel(config.GetConfiguration().Log.Level))
 	log.SetReportCaller(true)
 	log.SetFormatter(&nested.Formatter{
 		HideKeys:        true,
